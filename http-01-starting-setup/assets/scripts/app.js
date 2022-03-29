@@ -1,14 +1,14 @@
 const posts = document.querySelector(".posts");
 const singlePost = document.getElementById("single-post");
 
-function sendHttpRequests (method,url){
+function sendHttpRequests (method,url,data){
     const promise = new Promise((resolve,reject)=>{
         const xhr = new XMLHttpRequest();
         xhr.open(method,url);
         xhr.onload = function (){
             resolve(xhr.response);
         }
-        xhr.send();
+        xhr.send(JSON.stringify(data));
     })
     return promise;
 }
@@ -23,4 +23,16 @@ async function fetchPost(){
             posts.append(postEl);
         }
 }
+
+async function createPost(title,body){
+    const userId = Math.random();
+    const post = {
+        userId:userId,
+        title:title,
+        body:body
+    }
+    const newData =  sendHttpRequests("POST","https://jsonplaceholder.typicode.com/posts",post);
+}
+
 fetchPost();
+createPost("Learning http","POSTing for the first time in my life");
