@@ -1,15 +1,26 @@
 const posts = document.querySelector(".posts");
 const singlePost = document.getElementById("single-post");
 
-const xhr = new XMLHttpRequest();
-xhr.open("GET","https://jsonplaceholder.typicode.com/posts");
-xhr.onload = function (){
-    const listOfPosts = JSON.parse(xhr.response);
-    for(const post of listOfPosts){
-        const postEl = document.importNode(singlePost.content,true);
-        postEl.querySelector("h2").textContent = post.title;
-        postEl.querySelector("p").textContent = post.body;
-        posts.append(postEl);
-    }
+function sendHttpRequests (method,url){
+    const promise = new Promise((resolve,reject)=>{
+        const xhr = new XMLHttpRequest();
+        xhr.open(method,url);
+        xhr.onload = function (){
+            resolve(xhr.response);
+        }
+        xhr.send();
+    })
+    return promise;
 }
-xhr.send();
+
+async function fetchPost(){
+    const responseData = await sendHttpRequests("GET","https://jsonplaceholder.typicode.com/posts");    
+    const listOfPosts = JSON.parse(responseData);
+        for(const post of listOfPosts){
+            const postEl = document.importNode(singlePost.content,true);
+            postEl.querySelector("h2").textContent = post.title;
+            postEl.querySelector("p").textContent = post.body;
+            posts.append(postEl);
+        }
+}
+fetchPost();
