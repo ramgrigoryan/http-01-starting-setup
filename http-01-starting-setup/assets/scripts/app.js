@@ -23,12 +23,12 @@ async function fetchPost() {
   const listOfPosts = JSON.parse(responseData);
   for (const post of listOfPosts) {
     const postEl = document.importNode(singlePost.content, true);
+    postEl.querySelector("li").id = post.id;
     postEl.querySelector("h2").textContent = post.title;
     postEl.querySelector("p").textContent = post.body;
     posts.append(postEl);
   }
 }
-
 async function createPost(title,content) {
   const userId = Math.random();
   const post = {
@@ -48,4 +48,11 @@ form.addEventListener("submit",event=>{
     const content = event.currentTarget.querySelector("#content").value;
     createPost(title,content);
 });
+posts.addEventListener("click",event=>{
+if(event.target.tagName==="BUTTON"){
+  const postId = event.target.closest("li").id;
+  sendHttpRequests("DELETE",`https://jsonplaceholder.typicode.com/posts/${postId}`);
+  event.target.closest("li").remove();
+}
+})
 fetchBtn.addEventListener("click",fetchPost);
