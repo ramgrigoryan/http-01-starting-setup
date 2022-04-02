@@ -4,15 +4,18 @@ const form = document.querySelector("#new-post form");
 const fetchBtn = document.getElementById("fetch");
 
 function sendHttpRequests(method, url, data) {
-  const promise = new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.onload = function () {
-      resolve(xhr.response);
-    };
-    xhr.send(JSON.stringify(data));
-  });
-  return promise;
+  // const promise = new Promise((resolve, reject) => {
+  //   const xhr = new XMLHttpRequest();
+  //   xhr.open(method, url);
+  //   xhr.onload = function () {
+  //     resolve(xhr.response);
+  //   };
+  //   xhr.send(JSON.stringify(data));
+  // });
+  // return promise;
+  return fetch(url).then(response=>{
+    return response.json();
+  })
 }
 
 async function fetchPost() {
@@ -20,7 +23,7 @@ async function fetchPost() {
     "GET",
     "https://jsonplaceholder.typicode.com/posts"
   );
-  const listOfPosts = JSON.parse(responseData);
+  const listOfPosts = responseData;
   for (const post of listOfPosts) {
     const postEl = document.importNode(singlePost.content, true);
     postEl.querySelector("li").id = post.id;
